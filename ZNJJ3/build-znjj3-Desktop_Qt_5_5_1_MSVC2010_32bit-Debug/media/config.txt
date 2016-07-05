@@ -1,0 +1,16 @@
+﻿<node>file="1.wav" text="我要回去充电了"</node>
+<node>file="2.wav" text="孩子在摇篮里干什么呢"</node>
+<node>file="3.wav" text="欢迎光临内蒙古科技馆，我是智能家居机器人，欢迎来和我玩"</node>
+<node>file="4.wav" text="他好像要睡觉了"</node>
+<node>file="5.wav" text="怎么回不到充电座上呢？我还是休息吧。"</node>
+<node>file="6.wav" text="我的电量不足了"</node>
+<node>file="7.wav" text="我的右手边是环保机器人"</node>
+<node>file="8.wav" text="我的左手边是射箭机器人"</node>
+<node>file="9.wav" text="休息了这么久，我要启动啦"</node>
+<node>file="10.wav" text="我摇摇篮帮他睡觉吧"</node>
+<node>file="11.wav" text="我去看看他"</node>
+<node>file="12.wav" text="正前方是与机器人比一比"</node>
+<node>file="13.wav" text="正在返回充电座"</node>
+<node>file="14.wav" text="身后是我的邻居魔方机器人"</node>
+<node>file="15.wav" text="遇到障碍物，不能前进"</node>
+<node>file="16.wav" text="我发现了身上有一处错误，我要自动重启了！！"</node>

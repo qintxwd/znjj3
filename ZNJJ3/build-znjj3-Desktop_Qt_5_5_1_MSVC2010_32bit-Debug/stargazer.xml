@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stargazer>
+    <common angle_between_motor_and_camera="0" distance_between_move_center_and_camera="0"/>
+    <stars>
+        <star id="9938" x="0" theta="0" y="0"/>
+        <star id="9952" x="-145.9069111300831" theta="-42.96000000000001" y="168.4055048345968"/>
+        <star id="1460" x="-131.5880879095462" theta="0.7999999999999972" y="-143.6527618709064"/>
+    </stars>
+    <positions/>
+    <centerPosition x="13.17000000000001" theta="-1.39" y="54.7"/>
+    <guard>
+        <p text="12" x="-4" theta="-1.39" leftHand="1" y="52" rightHand="1"/>
+        <p text="8" x="-4" theta="-50" leftHand="1" y="52" rightHand="0"/>
+        <p text="7" x="-4" theta="40" leftHand="0" y="52" rightHand="1"/>
+        <p text="14" x="-4" theta="-1" leftHand="0" y="52" rightHand="0"/>
+    </guard>
+    <charge>
+        <p text="" x="-22.393" theta="-127.8" leftHand="0" y="115.661" rightHand="0"/>
+        <p text="" x="-59.9937" theta="-127.56" leftHand="0" y="163.187" rightHand="0"/>
+        <p text="" x="-66.3772" theta="-127.55" leftHand="0" y="171.769" rightHand="0"/>
+    </charge>
+    <cradle>
+        <p text="2" x="13.17" theta="132" leftHand="0" y="54.7" rightHand="0"/>
+        <p text="4" x="0" theta="132" leftHand="0" y="47" rightHand="0"/>
+        <p text="10" x="-83" theta="137" leftHand="1" y="-37" rightHand="1"/>
+        <p text="" x="-115" theta="137" leftHand="1" y="-65" rightHand="1"/>
+    </cradle>
+</stargazer>

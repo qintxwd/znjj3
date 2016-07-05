@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <screen width="1600" height="900"/>
+    <stm32 serial_port="COM6" serial_buadrate="9600"/>
+    <stargazer serial_port="COM5" serial_buadrate="115200"/>
+    <user command_tcp_server_port="8981" pcm_tcp_server_port="8982"/>
+    <motor serial_port="COM4" serial_buadrate="57600"/>
+    <arm serial_port="COM7" serial_buadrate="57600"/>
+    <eye serial_port="COM9" serial_buadrate="57600" />
+    <chest serial_port="COM10" serial_buadrate="9600" />
+</config>
