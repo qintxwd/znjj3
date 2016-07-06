@@ -40,7 +40,7 @@ bool Robot::init(QString &str)
         str = "no configure for motor in the config file";
         return false;
     }
-    connect(&motor,SIGNAL(moveEnd()),this,SLOT(motorMoveEnd()));
+	connect(&motor,SIGNAL(moveEnd()),this,SLOT(motorMoveEnd()));
     //打开stm32串口
     QString stm32SerialPortName = configure.getValue("stm32/serial_port");
     QString stm32SerialPortBuadrate = configure.getValue("stm32/serial_buadrate");
@@ -155,7 +155,9 @@ bool Robot::init(QString &str)
     powerLowTimer.setInterval(20000);
     isChargingTimer.setInterval(100);
     speakWelcome.setInterval(90000);
+    showPositionTimer.setInterval(500);
 
+    connect(&showPositionTimer,SIGNAL(timeout()),this,SLOT(showPosition()));
     connect(&speakWelcome,SIGNAL(timeout()),this,SLOT(toSpeakWelcome()));
     connect(&sendStatusTimer,SIGNAL(timeout()),this,SLOT(sendStatus()));
     connect(&powerLowTimer,SIGNAL(timeout()),this,SLOT(checkPowerLow()));
@@ -165,6 +167,7 @@ bool Robot::init(QString &str)
     powerLowTimer.start();
     isChargingTimer.start();
     speakWelcome.start();
+    showPositionTimer.start();
 
     return true;
 }
@@ -190,7 +193,7 @@ void Robot::circle()
 
 void Robot::forward(int mm,int speed)
 {
-    needReturnMotor = true;
+	needReturnMotor = true;
     if(isGoPosition)
         return ;
     QVector<int> param;
@@ -200,7 +203,7 @@ void Robot::forward(int mm,int speed)
 }
 void Robot::backward(int mm,int speed)
 {
-    needReturnMotor = true;
+	needReturnMotor = true;
     if(isGoPosition)
         return ;
     QVector<int> param;
@@ -210,7 +213,7 @@ void Robot::backward(int mm,int speed)
 }
 void Robot::turnLeft(int theta, int speed)
 {
-
+	needReturnMotor = true;
     if(isGoPosition)
         return ;
     QVector<int> param;
@@ -220,7 +223,7 @@ void Robot::turnLeft(int theta, int speed)
 }
 void Robot::turnRight(int theta,int speed)
 {
-    needReturnMotor = true;
+	needReturnMotor = true;
     if(isGoPosition)
         return ;
     QVector<int> param;
@@ -322,7 +325,7 @@ void Robot::handleResultsGoCharge(QString str)
 
 void Robot::goAboutPosition(double x,double y,double theta)
 {
-    isGoPosition = true;
+	isGoPosition = true;
     //0.fix direction
     double aimX = x;
     double aimY = y;
@@ -384,7 +387,7 @@ void Robot::goAboutPosition(double x,double y,double theta)
     //3.fix current direction
     turnToAngle(aimTheta);
     //qDebug() <<"turnToAngle aimTheta end!"<<aimTheta;
-    isGoPosition = false;
+	isGoPosition = false;
 }
 
 double Robot::turnToAngle(double angle)
@@ -461,6 +464,10 @@ void Robot::toSpeakWelcome()
         ttsPlay(3);
 }
 
+void Robot::showPosition()
+{
+    qDebug()<<QString("current position:%1   %2    %3").arg(curpos->x).arg(curpos->y).arg(curpos->theta);
+}
 
 void Robot::sendStatus()
 {

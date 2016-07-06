@@ -86,6 +86,12 @@ private:
     bool needReturnMotor;
 
     //发送正在回充电 或者正在充电
+    QTimer showPositionTimer;
+public slots:
+    void showPosition();
+private:
+
+    //发送正在回充电 或者正在充电
     QTimer sendStatusTimer;
 public slots:
     void sendStatus();
