@@ -21,7 +21,7 @@ void GoChargeThread::doGoCharge()  //执行线程
         return ;
     }
 
-    g_robot.goPosition(g_robot.stargazermap.centerPosition.x,g_robot.stargazermap.centerPosition.y,g_robot.stargazermap.centerPosition.theta);
+    g_robot.goAboutPosition(g_robot.stargazermap.centerPosition.x,g_robot.stargazermap.centerPosition.y,g_robot.stargazermap.centerPosition.theta);
     g_robot.waitForGoPositionFinish();
 
     g_robot.ttsPlay(1);
@@ -31,7 +31,9 @@ void GoChargeThread::doGoCharge()  //执行线程
     QList<ROUTE>  ps = g_robot.stargazermap.chargeRoute;
     for(int i=0;i<ps.length();++i)
     {
-        g_robot.goPosition(ps.at(i).position.x,ps.at(i).position.y,ps.at(i).position.theta);
+        g_robot.arm.LEFT_UP(0);
+        g_robot.arm.RIGHT_UP(0);
+        g_robot.goAboutPosition(ps.at(i).position.x,ps.at(i).position.y,ps.at(i).position.theta);
         g_robot.waitForGoPositionFinish();
         QThread::msleep(200);
     }
@@ -94,9 +96,12 @@ void GoChargeThread::doGoCharge()  //执行线程
             if(forwardTimers<15){
 
                 //退回，然后从来
-                g_robot.backward(300,30);
+                QVector<int> param;
+                param<<300<<30;
+                g_robot.motor.move(MOTOR_MOVE_TYPE_BACKWARD,param);
+                //g_robot.motor.backward(300,30);
                 g_robot.waitForMoveEnd();
-                g_robot.goPosition(ps.last().position.x,ps.last().position.y,ps.last().position.theta);
+                g_robot.goAboutPosition(ps.last().position.x,ps.last().position.y,ps.last().position.theta);
                 g_robot.waitForGoPositionFinish();
                 //然后重试这回充电座
                 ++forwardTimers;

@@ -43,6 +43,9 @@ public:
     void turnLeft(int theta,int speed);
     void turnRight(int theta, int speed);
     void diffRun(int l,int sl,int r,int sr);
+    void leftArm(int angle);//完成时发送返回值
+    void rightArm(int angle);   //完成时发送返回值
+    void bothArm(int angle);//完成时发送返回值
     void goPosition(double x,double y,double theta);
     void goCharge();
     volatile bool isGoPosition;
@@ -58,6 +61,8 @@ public slots:
     void ttsPlay(int n);
     void ttsPlayReturn(int n);
     void ttsPlayEnd();
+    void armMoveEnd();
+    void motorMoveEnd();
     void handleResultsGoPosition(QString str);
     void handleResultsGoCharge(QString str);
 public:
@@ -68,15 +73,17 @@ public:
     double turnToAngle(double angle);
     Stm32 stm32;
     Arm arm;
+    Motor motor;
 private:
     Chest chest;
     Eyes eyes;
-    Motor motor;
     QyhTts qyhtts;
     Configure configure;
     SGPOSITION *curpos;
 
-    bool needReturn;
+    bool needReturnTts;
+    bool needReturnArm;
+    bool needReturnMotor;
 
     //发送正在回充电 或者正在充电
     QTimer sendStatusTimer;
@@ -89,7 +96,6 @@ private:
 public slots:
     void checkPowerLow();
 private:
-
 
     //检测是否正在充电
     QTimer isChargingTimer;

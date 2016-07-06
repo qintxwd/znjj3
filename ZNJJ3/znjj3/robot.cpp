@@ -2,7 +2,7 @@
 
 const QString DEFAULT_CONFIG_FILE_NAME = "config.xml";
 
-Robot::Robot(QObject *parent) : QObject(parent),obTimeInterval(-1)
+Robot::Robot(QObject *parent) : QObject(parent),obTimeInterval(-1),needReturnArm(false),needReturnTts(false),needReturnMotor(false)
 {
 
 }
@@ -18,6 +18,7 @@ bool Robot::init(QString &str)
     }
     //初始化tts
     qyhtts.init();
+    connect(&qyhtts,SIGNAL(playEnd()),this,SLOT(ttsPlayEnd()));
     qyhtts.playFile("9.wav");
 
     //打开电机(motor)控制串口
@@ -39,7 +40,7 @@ bool Robot::init(QString &str)
         str = "no configure for motor in the config file";
         return false;
     }
-
+    connect(&motor,SIGNAL(moveEnd()),this,SLOT(motorMoveEnd()));
     //打开stm32串口
     QString stm32SerialPortName = configure.getValue("stm32/serial_port");
     QString stm32SerialPortBuadrate = configure.getValue("stm32/serial_buadrate");
@@ -87,6 +88,7 @@ bool Robot::init(QString &str)
         str = "no configure for arm in the config file";
         return false;
     }
+    connect(&arm,SIGNAL(moveEnd()),this,SLOT(armMoveEnd()));
 
     //打开眼睛灯板串口
     QString eyeSerialPortName = configure.getValue("eye/serial_port");
@@ -188,6 +190,7 @@ void Robot::circle()
 
 void Robot::forward(int mm,int speed)
 {
+    needReturnMotor = true;
     if(isGoPosition)
         return ;
     QVector<int> param;
@@ -197,6 +200,7 @@ void Robot::forward(int mm,int speed)
 }
 void Robot::backward(int mm,int speed)
 {
+    needReturnMotor = true;
     if(isGoPosition)
         return ;
     QVector<int> param;
@@ -206,6 +210,7 @@ void Robot::backward(int mm,int speed)
 }
 void Robot::turnLeft(int theta, int speed)
 {
+
     if(isGoPosition)
         return ;
     QVector<int> param;
@@ -215,6 +220,7 @@ void Robot::turnLeft(int theta, int speed)
 }
 void Robot::turnRight(int theta,int speed)
 {
+    needReturnMotor = true;
     if(isGoPosition)
         return ;
     QVector<int> param;
@@ -256,22 +262,50 @@ void Robot::ttsPlay(int n)
 
 void Robot::ttsPlayReturn(int n)
 {
-    needReturn = true;
+    needReturnTts = true;
     qyhtts.playIndex(n,true);
 }
+void Robot::leftArm(int angle)//完成时发送返回值
+{
+    needReturnArm = true;
+    arm.LEFT_UP(angle);
+}
+void Robot::rightArm(int angle)   //完成时发送返回值
+{
+    needReturnArm = true;
+    arm.RIGHT_UP(angle);
+}
+void Robot::bothArm(int angle)//完成时发送返回值
+{
+    needReturnArm = true;
+    arm.LEFT_UP(angle);
+    arm.RIGHT_UP(angle);
+}
 
+void Robot::armMoveEnd()
+{
+    if(needReturnArm){
+        ucts.mySend("zzjjok;");
+        needReturnArm = false;
+    }
+}
+void Robot::motorMoveEnd()
+{
+    if(needReturnMotor){
+        ucts.mySend("zzjjok;");
+        needReturnMotor = false;
+    }
+}
 void Robot::ttsPlayEnd()
 {
-    //TODO:need connect
-    if(needReturn){
+    if(needReturnTts){
         ucts.mySend("zzjjok;");
-        needReturn = false;
+        needReturnTts = false;
     }
 }
 
 void Robot::handleResultsGoPosition(QString str)
 {
-    //TODO: send? connect?
     if(str=="OK"){
         ucts.mySend("zzjjok;");
         isGoPosition = false;
@@ -280,14 +314,15 @@ void Robot::handleResultsGoPosition(QString str)
 
 void Robot::handleResultsGoCharge(QString str)
 {
-    //TODO: send? connect?
     if(str.length()>0){
-
+        //TODO:返回充电结果
+        qDebug() << "return to charge result:" <<str;
     }
 }
 
 void Robot::goAboutPosition(double x,double y,double theta)
 {
+    isGoPosition = true;
     //0.fix direction
     double aimX = x;
     double aimY = y;
@@ -349,7 +384,7 @@ void Robot::goAboutPosition(double x,double y,double theta)
     //3.fix current direction
     turnToAngle(aimTheta);
     //qDebug() <<"turnToAngle aimTheta end!"<<aimTheta;
-
+    isGoPosition = false;
 }
 
 double Robot::turnToAngle(double angle)
@@ -480,8 +515,7 @@ void Robot::queryDis()
             g_robot.stop();
         }
 
-        //TODO:
-         ucts.mySend("obstruction;");
+        //ucts.mySend("obstruction;");
         //emit send("obstruction;");
         //遇到障碍物
         if(currentBusiness != CONTROLLER_BUSINESS_CHARGE && currentBusiness != CONTROLLER_BUSINESS_CHARGING)
@@ -494,6 +528,7 @@ void Robot::queryDis()
         }
     }
 }
+
 void Robot::checkPowerLow()
 {
     if(stm32.getBattery() <= STM32_BATTERY_CHARGE_LOWEST && currentBusiness != CONTROLLER_BUSINESS_CHARGING)

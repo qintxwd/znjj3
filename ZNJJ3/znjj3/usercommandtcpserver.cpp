@@ -36,7 +36,10 @@ void UserCommandTcpServer::toBeSend(const char *str)
 void UserCommandTcpServer::mySend(const char *str)
 {
     if(tcpConnectedUserCommand)
+    {
+        qDebug() <<"send:"<<str;
         tcpConnectedUserCommand->write(str);
+    }
 }
 
 void UserCommandTcpServer::newConnectUser()
@@ -84,7 +87,6 @@ void UserCommandTcpServer::readMessageUser()
         if(qqqsl.length()==3 &&qqqsl[1]=="play" ){
             int n = qqqsl[2].toInt();
             g_robot.ttsPlayReturn(n);
-            //TODO:播放结束的返回值
         }
 
         //        3 机器人移动
@@ -97,6 +99,7 @@ void UserCommandTcpServer::readMessageUser()
             double theta = qqqsl[4].toDouble();
             g_robot.goPosition(x,y,theta);
         }
+
         //        4 机器人手臂
         //        zzjj:leftarm:a;(抬左臂，aa浮点数,代表角度)
         //        zzjj:rightarm:a;(抬右臂aa浮点数,代表角度)
@@ -105,16 +108,26 @@ void UserCommandTcpServer::readMessageUser()
         //        zzjjok;
         if(qqqsl.length()==3 &&qqqsl[1]=="leftarm" ){
             double a = qqqsl[2].toDouble();
-            g_robot.arm.LEFT_UP(a);
+            g_robot.leftArm(a);
         }
         if(qqqsl.length()==3 &&qqqsl[1]=="rightarm" ){
             double a = qqqsl[2].toDouble();
-            g_robot.arm.RIGHT_UP(a);
+            g_robot.rightArm(a);
         }
         if(qqqsl.length()==3 &&qqqsl[1]=="botharm" ){
             double a = qqqsl[2].toDouble();
-            g_robot.arm.LEFT_UP(a);
-            g_robot.arm.RIGHT_UP(a);
+            g_robot.leftArm(a);
+            g_robot.rightArm(a);
+        }
+        if(qqqsl.length()==4 && qqqsl[1]=="forward" ){
+            int mm = qqqsl[2].toInt();
+            int speed = qqqsl[3].toInt();
+            g_robot.forward(mm,speed);
+        }
+        if(qqqsl.length()==4 && qqqsl[1]=="backward" ){
+            int mm = qqqsl[2].toInt();
+            int speed = qqqsl[3].toInt();
+            g_robot.backward(mm,speed);
         }
     }
 }

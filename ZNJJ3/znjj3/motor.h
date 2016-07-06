@@ -42,6 +42,8 @@ signals:
 
     void motorReadCom(unsigned char *buf,int len);
 
+    void moveEnd();
+
 private:
 
     void processComRead(BYTE *buf,int bufLen);

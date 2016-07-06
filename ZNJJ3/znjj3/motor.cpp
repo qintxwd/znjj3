@@ -132,6 +132,7 @@ void Motor::processComRead(BYTE *buf,int bufLen)
             {
                 moveFinished = true;
                 waitHandredMs = 0;
+                emit moveEnd();
                 qDebug() <<"can not start move!!!!!!!";
             }
             else if((buf[3]&0x000000ff) == 1)   //运动OK
@@ -145,6 +146,7 @@ void Motor::processComRead(BYTE *buf,int bufLen)
             //qDebug() <<"move finish!!!!!!!";
             moveFinished = true;
             waitHandredMs = 0;
+            emit moveEnd();
             break;
         default:
             break;
