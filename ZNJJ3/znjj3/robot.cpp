@@ -156,18 +156,21 @@ bool Robot::init(QString &str)
     isChargingTimer.setInterval(100);
     speakWelcome.setInterval(90000);
     showPositionTimer.setInterval(500);
+    checkChargeFullTimer.setInterval(5000);
 
     connect(&showPositionTimer,SIGNAL(timeout()),this,SLOT(showPosition()));
     connect(&speakWelcome,SIGNAL(timeout()),this,SLOT(toSpeakWelcome()));
     connect(&sendStatusTimer,SIGNAL(timeout()),this,SLOT(sendStatus()));
     connect(&powerLowTimer,SIGNAL(timeout()),this,SLOT(checkPowerLow()));
     connect(&isChargingTimer,SIGNAL(timeout()),this,SLOT(checkIsCharging()));
+    connect(&checkChargeFullTimer,SIGNAL(timeout()),this,SLOT(checkChargeFull()));
 
     sendStatusTimer.start();
     powerLowTimer.start();
     isChargingTimer.start();
     speakWelcome.start();
     showPositionTimer.start();
+    checkChargeFullTimer.start();
 
     return true;
 }
@@ -561,6 +564,19 @@ void Robot::checkPowerLow()
             return ;
         }
         emit goChargeInThread();
+    }
+}
+
+void Robot::checkChargeFull()
+{
+    if(currentBusiness==CONTROLLER_BUSINESS_CHARGING){//正在充电,检查是否充满
+        if(stm32.getBattery()>STM32_BATTERY_PERFORM_LOWEST)
+        {
+            QVector<int> p;
+            p<<500<<30;
+            motor.move(MOTOR_MOVE_TYPE_BACKWARD,p);
+            motor.waitForMoveEnd();
+        }
     }
 }
 

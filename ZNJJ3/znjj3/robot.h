@@ -84,6 +84,12 @@ private:
     bool needReturnTts;
     bool needReturnArm;
     bool needReturnMotor;
+private:
+    //电量充满，退下充电座
+    QTimer checkChargeFullTimer;
+public slots:
+    void checkChargeFull();
+private:
 
     //发送正在回充电 或者正在充电
     QTimer showPositionTimer;
